@@ -1,24 +1,31 @@
----
-- name: "Start and enable MariaDB service"
+- name: "Démarrer et activer le service MariaDB"
   ansible.builtin.service:
-    name: "{{ db_service }}"
+    name: "{{ services[ansible_distribution | lower].database | default('mariadb') }}"
     state: started
     enabled: yes
 
-- name: "Create the WordPress database"
-  community.mysql.mysql_db:
-    name: "{{ wp_db_name }}"
-    state: present
-    login_unix_socket: /var/run/mysqld/mysqld.sock # Plus sûr que user/pass
-  become: yes
-
-- name: "Create the WordPress database user"
+- name: "Définir mot de passe root MariaDB si pas encore défini"
   community.mysql.mysql_user:
-    name: "{{ wp_db_user }}"
-    password: "{{ wp_db_password }}"
-    priv: "{{ wp_db_name }}.*:ALL"
-    state: present
-    host: "{{ wp_db_host }}"
+    name: root
+    host_all: yes
+
+    password: "{{ mariadb_root_password }}"
     login_unix_socket: /var/run/mysqld/mysqld.sock
   become: yes
-  # no_log: true # Décommenter pour ne pas afficher le mot de passe dans les logs
+
+- name: "Créer la base de données pour WordPress"
+  community.mysql.mysql_db:
+    name: "{{ wordpress_db_name }}"
+    state: present
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: yes
+
+- name: "Créer l'utilisateur de la base de données pour WordPress"
+  community.mysql.mysql_user:
+    name: "{{ wordpress_db_user }}"
+    password: "{{ wordpress_db_password }}"
+    priv: "{{ wordpress_db_name }}.*:ALL"
+    state: present
+    host: "localhost"
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+  become: yes

@@ -1,21 +1,11 @@
-# tasks/main.yml (version finale)
----
-- name: "1. Load OS-specific variables"
-  ansible.builtin.include_vars: "{{ ansible_os_family }}.yml"
-  tags: ['always']
+- name: paquets nécessaires
+  import_tasks: install_prereqs.yml
 
-- name: "2. Run OS-specific installation"
-  ansible.builtin.include_tasks: "setup-{{ ansible_os_family }}.yml"
-  tags: ['install']
+- name: MariaDB
+  import_tasks: setup_mariadb.yml
 
-- name: "3. Configure and secure MariaDB"
-  ansible.builtin.include_tasks: setup_mariadb.yml
-  tags: ['database']
+- name: WordPress
+  import_tasks: setup_wordpress.yml
 
-- name: "4. Download and configure WordPress"
-  ansible.builtin.include_tasks: setup_wordpress.yml
-  tags: ['wordpress']
-
-- name: "5. Configure web server (Apache/httpd)"
-  ansible.builtin.include_tasks: setup_webserver.yml
-  tags: ['webserver']
+- name: Apache webserver
+  import_tasks: setup_webserver.yml

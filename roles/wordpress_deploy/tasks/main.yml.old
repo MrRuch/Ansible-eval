@@ -1,0 +1,16 @@
+---
+- name: "1. Install prerequisites for all OS"
+  ansible.builtin.include_tasks: install_prereqs.yml
+  tags: ['install']
+
+- name: "2. Configure and secure MariaDB"
+  ansible.builtin.include_tasks: setup_mariadb.yml
+  tags: ['database']
+
+- name: "3. Download and configure WordPress"
+  ansible.builtin.include_tasks: setup_wordpress.yml
+  tags: ['wordpress']
+
+- name: "4. Configure web server (Apache/httpd)"
+  ansible.builtin.include_tasks: setup_webserver.yml
+  tags: ['webserver']

@@ -5,6 +5,6 @@
   vars:
     # On surcharge le mot de passe par défaut du rôle avec une valeur plus sûre
     # Pour ce lab, on peut le laisser ici.
-    wp_db_password: "MyLabPasswordIsSecure123"
+    wp_db_password: "dbpassword"
   roles:
     - wordpress_deploy

@@ -1,6 +1,18 @@
 ---
-# handlers file for wordpress_deploy
-- name: "Restart web server"
-  ansible.builtin.service:
-    name: "{{ web_service }}"
+- name: restart web server
+  systemd:
+    name: "{{ services[ansible_os_family | lower].web_server }}"
     state: restarted
+  listen: restart web server
+
+- name: reload web server
+  systemd:
+    name: "{{ services[ansible_os_family | lower].web_server }}"
+    state: reloaded
+  listen: reload web server
+
+- name: restart mariadb
+  systemd:
+    name: "{{ services[ansible_os_family | lower].database }}"
+    state: restarted
+  listen: restart mariadb

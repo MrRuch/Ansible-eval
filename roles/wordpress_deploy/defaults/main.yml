@@ -1,18 +1,21 @@
-# defaults/main.yml
----
-# Version de WordPress à installer
-wp_version: "latest"
+mariadb_root_password: "dbpassword"
 
-# Chemin d'installation de WordPress
-wp_install_path: "/var/www/html/wordpress"
+# Base WordPress
+wordpress_db_name: "wordpress"
+wordpress_db_user: "user"
+wordpress_db_password: "dbpassword"
 
-# Paramètres de la base de données
-wp_db_name: "wordpress_db"
-wp_db_user: "wordpress_user"
-# ATTENTION : Il est fortement recommandé de changer ce mot de passe par défaut
-# et de le passer via des variables chiffrées (Ansible Vault) en production.
-wp_db_password: "ChangeMePlease123!"
-wp_db_host: "localhost"
+# URL WordPress
+wordpress_download_url: "https://wordpress.org/latest.zip"
 
-# Préfixe des tables WordPress
-wp_table_prefix: "wp_"
+# Répertoire web root (pour Ubuntu et Rocky)
+wordpress_web_root: "/var/www/html"
+
+# Apache service name par OS
+apache_service_name: "{{ 'apache2' if ansible_os_family == 'Debian' else 'httpd' }}"
+
+# User et groupe web (www-data pour Debian, apache pour RedHat)
+web_user: "{{ 'www-data' if ansible_os_family == 'Debian' else 'apache' }}"
+
+# Commande démarrage MariaDB (mysqld_safe)
+mariadb_start_command: "mysqld_safe --datadir=/var/lib/mysql &"
