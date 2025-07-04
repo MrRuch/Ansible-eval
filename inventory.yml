@@ -1,0 +1,22 @@
+# config/inventory.yml (Version corrigée pour la communication inter-conteneurs)
+all:
+  vars:
+    ansible_user: root
+    ansible_password: "P@ssw0rd"
+    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+    ansible_python_interpreter: /usr/bin/python3
+
+  children:
+    ubuntu_servers:
+      hosts:
+        client1:
+          # On utilise le nom du service comme nom d'hôte
+          ansible_host: client1
+        client2:
+          ansible_host: client2
+    rocky_servers:
+      hosts:
+        client3:
+          ansible_host: client3
+        client4:
+          ansible_host: client4

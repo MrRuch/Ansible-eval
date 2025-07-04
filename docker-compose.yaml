@@ -3,19 +3,19 @@
 services:
   ansible:
     hostname: ansible
-    image: ftutorials/ubuntu-ssh:1.0
+    image: ftutorials/ubuntu-ansible
     container_name: ansible
     ports:
       - "2222:22"
       - "80:80"
     volumes:
-      - ./projet:/root/projet
+      - .:/ansible
     networks:
       - ansible_net
 
   client1:
     hostname: client1
-    image: ftutorials/ubuntu-ssh:1.0
+    image: ftutorials/ubuntu-ssh
     container_name: client1
     ports:
       - "2223:22"
@@ -26,7 +26,7 @@ services:
 
   client2:
     hostname: client2
-    image: ftutorials/ubuntu-ssh:1.0
+    image: ftutorials/ubuntu-ssh
     container_name: client2
     ports:
       - "2224:22"
@@ -37,7 +37,7 @@ services:
 
   client3:
     hostname: client3
-    image: ftutorials/rocky-ssh:1.0
+    image: ftutorials/rocky-ssh
     container_name: client3
     ports:
       - "2225:22"
@@ -48,7 +48,7 @@ services:
 
   client4:
     hostname: client4
-    image: ftutorials/rocky-ssh:1.0
+    image: ftutorials/rocky-ssh
     container_name: client4
     ports:
       - "2226:22"

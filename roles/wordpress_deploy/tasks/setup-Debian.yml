@@ -1,0 +1,14 @@
+---
+- name: "Update apt cache"
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600 # Ne le refait pas si le cache a moins d'1h
+
+- name: "Install prerequisites on Debian/Ubuntu"
+  ansible.builtin.package:
+    name:
+      - "{{ web_package }}"
+      - "{{ db_package }}"
+      - "{{ db_python_package }}"
+      - "{{ php_packages }}"
+    state: present

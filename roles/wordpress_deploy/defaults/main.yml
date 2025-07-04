@@ -1,0 +1,18 @@
+# defaults/main.yml
+---
+# Version de WordPress à installer
+wp_version: "latest"
+
+# Chemin d'installation de WordPress
+wp_install_path: "/var/www/html/wordpress"
+
+# Paramètres de la base de données
+wp_db_name: "wordpress_db"
+wp_db_user: "wordpress_user"
+# ATTENTION : Il est fortement recommandé de changer ce mot de passe par défaut
+# et de le passer via des variables chiffrées (Ansible Vault) en production.
+wp_db_password: "ChangeMePlease123!"
+wp_db_host: "localhost"
+
+# Préfixe des tables WordPress
+wp_table_prefix: "wp_"

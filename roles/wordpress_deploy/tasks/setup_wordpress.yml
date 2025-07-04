@@ -1,0 +1,27 @@
+---
+- name: "Download and unarchive WordPress"
+  ansible.builtin.unarchive:
+    src: "https://wordpress.org/wordpress-{{ wp_version }}.tar.gz"
+    dest: "/var/www/html"
+    remote_src: yes
+    creates: "{{ wp_install_path }}/wp-config-sample.php" # Ne s'exécute que si le dossier n'existe pas
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: "0755"
+
+- name: "Create wp-config.php from template"
+  ansible.builtin.template:
+    src: wp-config.php.j2
+    dest: "{{ wp_install_path }}/wp-config.php"
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    mode: "0640"
+  notify: "Restart web server" # Notifie le handler si le fichier change
+
+- name: "Set correct ownership on WordPress directory"
+  ansible.builtin.file:
+    path: "{{ wp_install_path }}"
+    state: directory
+    owner: "{{ web_user }}"
+    group: "{{ web_group }}"
+    recurse: yes

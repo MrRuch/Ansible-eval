@@ -1,0 +1,10 @@
+# config/playbook.yml
+---
+- name: "Deploy WordPress to all servers"
+  hosts: all
+  vars:
+    # On surcharge le mot de passe par défaut du rôle avec une valeur plus sûre
+    # Pour ce lab, on peut le laisser ici.
+    wp_db_password: "MyLabPasswordIsSecure123"
+  roles:
+    - wordpress_deploy

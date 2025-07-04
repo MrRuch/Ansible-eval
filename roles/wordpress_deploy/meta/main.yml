@@ -1,0 +1,28 @@
+# meta/main.yml
+galaxy_info:
+  author: "Ruchebe MARC"
+  description: "Un rôle Ansible pour déployer WordPress avec une base MariaDB sur Ubuntu et Rocky Linux."
+  company: "SOLO"
+  license: "MIT"
+  min_ansible_version: "2.12"
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal   # 20.04
+        - jammy   # 22.04
+    - name: Rocky
+      versions:
+        - 8
+        - 9
+
+  galaxy_tags:
+    - web
+    - wordpress
+    - apache
+    - httpd
+    - mariadb
+    - database
+    - blog
+
+dependencies: []

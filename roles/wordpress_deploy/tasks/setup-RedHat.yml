@@ -1,0 +1,20 @@
+# roles/wordpress_deploy/tasks/setup-RedHat.yml (Version finale et robuste)
+---
+- name: "Reset PHP module stream to ensure idempotency"
+  ansible.builtin.command: dnf module reset -y php
+  changed_when: false # Cette commande ne change pas l'état, elle prépare
+
+- name: "Enable PHP 8.1 module stream on RedHat/Rocky"
+  ansible.builtin.command: dnf module enable -y php:8.1
+  # Ne s'exécute que si la commande précédente a changé quelque chose ou si php n'est pas là
+  # C'est une façon de le rendre plus idempotent
+
+- name: "Install prerequisites on RedHat/Rocky"
+  ansible.builtin.dnf: # Utilisons le module dnf, plus spécifique et puissant
+    name:
+      - "{{ web_package }}"
+      - "{{ db_package }}"
+      - "{{ db_python_package }}"
+      - "{{ php_packages }}"
+    state: present
+    update_cache: yes

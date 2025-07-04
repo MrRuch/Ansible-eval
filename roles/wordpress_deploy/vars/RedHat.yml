@@ -1,0 +1,29 @@
+# roles/wordpress_deploy/vars/RedHat.yml
+---
+# Variables pour les systèmes RedHat/Rocky/CentOS
+web_package: "httpd"
+web_service: "httpd"
+web_user: "apache"
+web_group: "apache"
+web_config_path: "/etc/httpd/conf.d/wordpress.conf"
+
+# Paquet Python nécessaire pour que les modules Ansible mysql_* fonctionnent
+# Notez la casse différente du nom du paquet
+db_python_package: "python3-PyMySQL"
+
+db_package: "mariadb-server"
+db_service: "mariadb"
+
+# Liste des extensions PHP requises pour WordPress sur RedHat/Rocky
+# Notez l'absence de 'libapache2-mod-php' et le nom 'php-mysqlnd'
+php_packages:
+  - php
+  - php-mysqlnd
+  - php-curl
+  - php-gd
+  - php-mbstring
+  - php-xml
+  - php-xmlrpc
+  - php-soap
+  - php-intl
+  - php-zip

@@ -1,0 +1,23 @@
+---
+- name: "Create Apache virtual host for WordPress"
+  ansible.builtin.template:
+    src: apache-wordpress.conf.j2
+    dest: "{{ web_config_path }}"
+    owner: root
+    group: root
+    mode: "0644"
+  notify: "Restart web server"
+
+- name: "Enable new site on Debian/Ubuntu"
+  ansible.builtin.command: a2ensite wordpress.conf
+  when: ansible_os_family == "Debian"
+  args:
+    creates: "{{ web_config_enabled_path }}" # La commande ne s'exécute que si le lien n'existe pas
+  notify: "Restart web server"
+
+- name: "Disable default site on Debian/Ubuntu"
+  ansible.builtin.command: a2dissite 000-default.conf
+  when: ansible_os_family == "Debian"
+  args:
+    removes: "/etc/apache2/sites-enabled/000-default.conf" # La commande ne s'exécute que si le lien existe
+  notify: "Restart web server"

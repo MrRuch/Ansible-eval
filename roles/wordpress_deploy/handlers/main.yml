@@ -1,0 +1,6 @@
+---
+# handlers file for wordpress_deploy
+- name: "Restart web server"
+  ansible.builtin.service:
+    name: "{{ web_service }}"
+    state: restarted
