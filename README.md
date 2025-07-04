@@ -42,6 +42,8 @@ Une fois les conteneurs démarrés, vous pouvez lancer le playbook de déploieme
 2.  **Lancez le playbook :**
 
     ```bash
+    cd /ansible
+
     ansible-playbook playbook-wordpress.yml
     ```
 
@@ -63,7 +65,6 @@ Sur chaque page, vous devriez voir l'écran d'installation de WordPress.
 Pour vérifier que le rôle est bien idempotent (un critère clé), relancez simplement le playbook une seconde fois :
 
 ```bash
-cd /ansible
 
 ansible-playbook playbook-wordpress.yml
 ```
