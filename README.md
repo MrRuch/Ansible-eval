@@ -1,145 +1,79 @@
+# Projet de Déploiement WordPress avec Ansible et Docker
 
-# 🚀 Débuter avec Ansible sous Docker
+Ce projet a pour objectif d'automatiser le déploiement d'un site WordPress avec une base de données MariaDB sur des serveurs Ubuntu et Rocky Linux, en utilisant Ansible dans un environnement conteneurisé avec Docker.
 
-Bienvenue dans ce **LAB** d’initiation à **Ansible** !  
-Tu vas apprendre à **automatiser des tâches répétitives** sur des machines Linux dans un environnement **conteneurisé**, sans rien casser sur ta machine, et en consommant **le moins de ressources possibles**.
+## Structure du Projet
 
-> 🐳 Grâce à **Docker**, chaque machine virtuelle est remplacée par un **conteneur léger**, rapide à lancer et à supprimer. C’est idéal pour s’exercer sur une configuration proche de la réalité, sans utiliser des machines virtuelles lourdes.
+-   `docker-compose.yml`: Définit l'infrastructure du lab (1 contrôleur Ansible, 4 clients).
+-   `ansible.cfg`: Fichier de configuration principal pour Ansible.
+-   `inventory.yml`: Inventaire des serveurs cibles (les conteneurs clients).
+-   `playbook-wordpress.yml`: Le playbook principal qui exécute le déploiement.
+-   `roles/`: Contient les rôles Ansible.
+    -   `wordpress_deploy/`: Le rôle principal pour le déploiement de WordPress.
 
----
+## Guide de Démarrage Rapide
 
-⚠️ **IMPORTANT** :  
-**LES IMAGES DOCKER DE CE LAB SONT RÉSERVÉES À DES FINS DE TEST ET D’APPRENTISSAGE UNIQUEMENT !**    ➡️ **NE PAS LES UTILISER DANS UN  ENVIRONNEMENT DE PRODUCTION.**
+Suivez ces étapes pour lancer l'environnement et déployer WordPress.
 
+### 1. Prérequis
 
----
+-   [Docker Desktop](https://www.docker.com/get-started/) doit être installé et en cours d'exécution.
 
+### 2. Lancement de l'environnement
 
-## ⚙️ Et pourquoi Docker Compose ?
-
-Docker Compose est un outil qui permet de :
-- **définir plusieurs conteneurs dans un seul fichier (`docker-compose.yaml`)**
-- **les lancer tous en une seule commande**
-
-🎯 C’est parfait pour notre lab : un conteneur pour le controleur Ansible + plusieurs conteneurs clients.
-
----
-
-## ✅ Prérequis à installer
-
-Avant de commencer, selon ton OS installes sur ta machine :
-
-- [Docker Desktop](https://www.docker.com/get-started/)
-- [Visual Studio Code](https://code.visualstudio.com/)
-- [Git](https://git-scm.com/downloads)
-
-
----
-
-## 📁 Structure du lab
-
-Le fichier `docker-compose.yaml` crée les conteneurs suivants :
-
-| Nom | Rôle | Port SSH | Image utilisée |
-|-----|------|----------|----------------|
-| `ansible` | Conteneur de contrôle Ansible | 2222 | [`ftutorials/ubuntu-ansible`](https://hub.docker.com/r/ftutorials/ubuntu-ansible/tags) |
-| `client1` | Conteneur cible Ubuntu | 2223 | [`ftutorials/ubuntu-ssh`](https://hub.docker.com/r/ftutorials/ubuntu-ssh/tags) |
-| `client2` | Conteneur cible Ubuntu | 2224 | [`ftutorials/ubuntu-ssh`](https://hub.docker.com/r/ftutorials/ubuntu-ssh/tags) |
-| `client3` | Conteneur cible Rocky Linux | 2225 | [`ftutorials/rocky-ssh`](https://hub.docker.com/r/ftutorials/rocky-ssh/tags) |
-| `client4` | Conteneur cible Rocky Linux | 2226 | [`ftutorials/rocky-ssh`](https://hub.docker.com/r/ftutorials/rocky-ssh/tags) |
-| `quiz-ansible` | Quiz | XXXX | [`ftutorials/quiz:ansible-1`](https://hub.docker.com/r/ftutorials/quiz/tags) |
-
----
-
-## 🚀 Comment utiliser le LAB
-
-### 1. Télécharger ou cloner le projet
+Ouvrez un terminal à la racine de ce projet et lancez la commande suivante. Cela va construire et démarrer tous les conteneurs en arrière-plan.
 
 ```bash
-git clone https://github.com/franklin-tutorials/ansible.git
+docker compose up -d
 ```
 
-N'hésites pas à utiliser la méthode de ton choix.
+### 3. Exécution du Déploiement Ansible
 
-### 2. Lancer les conteneurs depuis ton terminal
+Une fois les conteneurs démarrés, vous pouvez lancer le playbook de déploiement.
 
-Se positionner à l'emplacement du fichier `docker-compose.yaml` et lancer :
+1.  **Connectez-vous au conteneur de contrôle `ansible` :**
+
+    ```bash
+    docker compose exec ansible bash
+    ```
+
+    Vous êtes maintenant à l'intérieur du conteneur, dans le répertoire `/ansible`.
+
+2.  **Lancez le playbook :**
+
+    ```bash
+    ansible-playbook playbook-wordpress.yml
+    ```
+
+    Ansible va maintenant se connecter à tous les clients et exécuter les tâches définies dans le rôle `wordpress_deploy`.
+
+### 4. Vérification
+
+Après une exécution réussie, vous pouvez vérifier que les sites WordPress sont accessibles dans votre navigateur :
+
+-   **Client 1 (Ubuntu) :** `http://localhost:8083/wordpress`
+-   **Client 2 (Ubuntu) :** `http://localhost:8084/wordpress`
+-   **Client 3 (Rocky) :** `http://localhost:8085/wordpress`
+-   **Client 4 (Rocky) :** `http://localhost:8086/wordpress`
+
+Sur chaque page, vous devriez voir l'écran d'installation de WordPress.
+
+### 5. Test de l'Idempotence
+
+Pour vérifier que le rôle est bien idempotent (un critère clé), relancez simplement le playbook une seconde fois :
 
 ```bash
-cd ansible 
+cd /ansible
+
+ansible-playbook playbook-wordpress.yml
 ```
+
+Le résumé final (`PLAY RECAP`) devrait afficher `changed=0` pour tous les clients, prouvant que rien n'a été modifié car tout était déjà en place.
+
+### 6. Arrêt de l'environnement
+
+Quand vous avez terminé, vous pouvez arrêter et supprimer tous les conteneurs et réseaux du lab avec la commande suivante :
 
 ```bash
-docker compose up -d  
+docker compose down
 ```
-
-### 3. Lister et voir l'état des conteneurs depuis ton terminal
-
-```bash
-docker compose ps 
-```
-
-### 4. Tester la connexion SSH depuis ton terminal
-
-```bash
-ssh root@localhost -p 2222  # ansible
-ssh root@localhost -p 2223  # client1
-ssh root@localhost -p 2224  # client2
-ssh root@localhost -p 2225  # client3
-ssh root@localhost -p 2226  # client4
-```
-🔑 Mot de passe : P@ssw0rd
-
-⚠️ **IMPORTANT** :  
-**LES IMAGES DOCKER DE CE LAB SONT RÉSERVÉES À DES FINS DE TEST ET D’APPRENTISSAGE UNIQUEMENT !**    ➡️ **NE PAS LES UTILISER DANS UN  ENVIRONNEMENT DE PRODUCTION.**
-
-Le dossier `config` est partagé dans le conteneur ansible à l’emplacement : `/root/config`.
-
-C’est dans ce dossier en local sur ta machine que tu écriras ton inventaire, tes playbooks, tes rôles etc ... afin de conserver tes fichiers en cas de suppression de ton conteneur ansible.
-
-### 5. Arrêter les conteneurs depuis ton terminal
-
-```bash
-docker compose stop 
-```
-
-### 6. Arrêter et supprimer les conteneurs depuis ton terminal
-
-```bash
-docker compose down 
-```
-
-### BONUS. Utilisation de Makefile
-
-`Makefile` est un fichier texte utilisé par la commande `make` pour automatiser des tâches répétitives.
-
-Les commandes disponibles :
-
-```bash
-make start     # Lancerenvironnement de travail
-make stop      # Arreterenvironnement de travail
-make restart   # Redemarrerenvironnement de travail
-make logs      # Voir les logsenvironnement de travail
-make list      # Voir les conteneursactifs environnement de travail
-```
-⚠️ L'outil `GNU make` doit être installé sur votre machine.
-
----
-
-## 📚 Pour aller plus loin
-
-- [Documentation Docker](https://www.docker.com/)
-- [Documentation Ansible](https://docs.ansible.com/)
-
-
----
-
-
-
-
-
-
-
-
-
-

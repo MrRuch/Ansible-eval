@@ -10,6 +10,7 @@ services:
       - "80:80"
     volumes:
       - .:/ansible
+    command: bash -c "chmod o-w /ansible && sleep infinity"
     networks:
       - ansible_net
 
